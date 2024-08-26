@@ -21,6 +21,8 @@ setopt HIST_FIND_NO_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt HIST_EXPIRE_DUPS_FIRST
 setopt INC_APPEND_HISTORY
+# to avoid the % char e.g. if tmux sends keys before completely loaded
+unsetopt PROMPT_SP
 
 autoload -U colors && colors
 
@@ -121,11 +123,11 @@ ff() {
   local file line="1"
   set -o pipefail
   if [ "$1" != "" ]; then
-    file_tmp=$(rg -n "$1" ~/dev ~/hda | fzf) || return 1
+    file_tmp=$(rg --hidden -n "$1" ~/dev ~/hda ~/dotfiles | fzf) || return 1
     file=$(echo "$file_tmp" | cut -d: -f1)
     line=$(echo "$file_tmp" | cut -d: -f2)
   else
-    file=$(rg --files --hidden -g '!.git' -g '!.git/**' -g '!*.pdf' ~/dev ~/hda | fzf) || return 1
+    file=$(rg --files --hidden -g '!.git' -g '!.git/**' -g '!*.pdf' ~/dev ~/hda ~/dotfiles | fzf) || return 1
   fi
 
   dir=$(dirname "$file")
@@ -140,6 +142,46 @@ ff() {
   fi
 
   nvim +"$line" "$file"
+
+  return 0
+}
+
+open_project() {
+  local file line="1"
+  set -o pipefail
+  if [ "$1" != "" ]; then
+    file_tmp=$(rg --hidden -n "$1" ~/dev ~/hda ~/dotfiles | fzf) || return 1
+    file=$(echo "$file_tmp" | cut -d: -f1)
+    line=$(echo "$file_tmp" | cut -d: -f2)
+  else
+    file=$(rg --files --hidden -g '!.git' -g '!.git/**' -g '!*.pdf' ~/dev ~/hda ~/dotfiles | fzf) || return 1
+  fi
+
+  dir=$(dirname "$file")
+  session_name="~${dir#"$HOME"}"
+  git_root=$(git -C "$dir" rev-parse --show-toplevel 2> /dev/null)
+  is_git_repo=$?
+
+  if [ $is_git_repo -eq 0 ]; then
+    dir="$git_root"
+  fi
+
+  tmux new-session -d -s "$session_name"
+  tmux new-window -t "${session_name}:2"
+  tmux send-keys -t "${session_name}:1" "cd ${dir} && clear" C-m
+  tmux send-keys -t "${session_name}:2" "cd ${dir} && clear" C-m
+  tmux send-keys -t "${session_name}:2" "nvim +1 $file" C-m
+  tmux split-window -h -d -t "${session_name}:2"
+  tmux resize-pane -t "${session_name}:2.2" -R 30
+  tmux send-keys -t "${session_name}:2.2" "cd ${dir} && clear" C-m
+
+  if [ $is_git_repo -eq 0 ]; then
+    tmux new-window -t "${session_name}:3"
+    tmux send-keys -t "${session_name}:3" "cd ${dir} && clear" C-m
+    tmux send-keys -t "${session_name}:3" "lazygit" C-m
+  fi
+
+  tmux switch-client -t "${session_name}:2"
 
   return 0
 }
@@ -159,6 +201,8 @@ autoload -Uz compinit
 compinit
 # enables the behavior for: cd <Tab><Tab> to get an menu to select from completion
 zstyle ':completion:*' menu select
+# also consider dotfiles when doing e.g. vi <Tab>
+_comp_options+=(globdots)
 
 # Set up fzf key bindings and fuzzy completion
 source <(fzf --zsh)
