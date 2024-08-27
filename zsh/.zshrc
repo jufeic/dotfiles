@@ -167,19 +167,28 @@ open_project() {
 
   session_name="~${dir#"$HOME"}"
 
-  tmux new-session -d -s "$session_name"
-  tmux new-window -t "${session_name}:2"
-  tmux send-keys -t "${session_name}:1" "cd ${dir} && clear" C-m
-  tmux send-keys -t "${session_name}:2" "cd ${dir} && clear" C-m
-  tmux send-keys -t "${session_name}:2" "nvim +1 $file" C-m
-  tmux split-window -h -d -t "${session_name}:2"
-  tmux resize-pane -t "${session_name}:2.2" -R 30
-  tmux send-keys -t "${session_name}:2.2" "cd ${dir} && clear" C-m
+  if ! tmux has-session -t "$session_name" 2> /dev/null; then
+    tmux new-session -d -s "$session_name"
+    tmux new-window -t "${session_name}:2"
+    tmux send-keys -t "${session_name}:1" "cd ${dir} && clear" C-m
+    tmux send-keys -t "${session_name}:2" "cd ${dir} && clear" C-m
+    tmux send-keys -t "${session_name}:2" "nvim +1 $file" C-m
+    tmux split-window -h -d -t "${session_name}:2"
+    tmux resize-pane -t "${session_name}:2.2" -R 30
+    tmux send-keys -t "${session_name}:2.2" "cd ${dir} && clear" C-m
 
-  if [ $is_git_repo -eq 0 ]; then
-    tmux new-window -t "${session_name}:3"
-    tmux send-keys -t "${session_name}:3" "cd ${dir} && clear" C-m
-    tmux send-keys -t "${session_name}:3" "lazygit" C-m
+    if [ $is_git_repo -eq 0 ]; then
+      tmux new-window -t "${session_name}:3"
+      tmux send-keys -t "${session_name}:3" "cd ${dir} && clear" C-m
+      tmux send-keys -t "${session_name}:3" "lazygit" C-m
+    fi
+  else
+    window_name=$(tmux list-windows -t "$session_name" -F "#{window_index}:#{window_name}" | grep "^2:");
+    if [[ $window_name == "2:nvim" ]]; then
+      tmux send-keys -t "${session_name}:2.1" ":n $file" C-m
+    else
+      tmux send-keys -t "${session_name}:2.1" "nvim +1 $file" C-m
+    fi
   fi
 
   tmux switch-client -t "${session_name}:2"
