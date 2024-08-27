@@ -158,13 +158,14 @@ open_project() {
   fi
 
   dir=$(dirname "$file")
-  session_name="~${dir#"$HOME"}"
   git_root=$(git -C "$dir" rev-parse --show-toplevel 2> /dev/null)
   is_git_repo=$?
 
   if [ $is_git_repo -eq 0 ]; then
     dir="$git_root"
   fi
+
+  session_name="~${dir#"$HOME"}"
 
   tmux new-session -d -s "$session_name"
   tmux new-window -t "${session_name}:2"
