@@ -153,6 +153,54 @@ ff() {
 }
 
 open_project() {
+  project=$(find ~/dotfiles ~/dev ~/hda -type d -name .git | xargs -I {} dirname {} | sort -u | fzf)
+  session_name="~${project#"$HOME"}"
+
+  if ! tmux has-session -t "$session_name" 2> /dev/null; then
+    tmux_project_windows $session_name $project ""
+    tmux_git_window $session_name $project
+  else
+    # select the nvim pane before checking the window names e.g. if focus is one other pane
+    tmux select-pane -t "${session_name}:2.1"
+    window_name=$(tmux list-windows -t "$session_name" -F "#{window_index}:#{window_name}" | grep "^2:");
+    if [[ $window_name != "2:nvim" ]]; then
+      tmux send-keys -t "${session_name}:2.1" "nvim" C-m
+    fi
+  fi
+
+  tmux switch-client -t "${session_name}:2"
+
+  return 0
+}
+
+tmux_project_windows() {
+  session_name=$1
+  dir=$2
+  file=$3
+  tmux new-session -d -s "$session_name"
+  tmux new-window -t "${session_name}:2"
+  tmux send-keys -t "${session_name}:1" "cd ${dir} && clear" C-m
+  tmux send-keys -t "${session_name}:2" "cd ${dir} && clear" C-m
+  if [[ $file == "" ]]; then
+    tmux send-keys -t "${session_name}:2" "nvim" C-m
+  else
+    tmux send-keys -t "${session_name}:2" "nvim +1 $file" C-m
+  fi
+  tmux split-window -h -d -t "${session_name}:2"
+  tmux resize-pane -t "${session_name}:2.2" -R 30
+  tmux send-keys -t "${session_name}:2.2" "cd ${dir} && clear" C-m
+
+}
+
+tmux_git_window() {
+  session_name=$1
+  dir=$2
+  tmux new-window -t "${session_name}:3"
+  tmux send-keys -t "${session_name}:3" "cd ${dir} && clear" C-m
+  tmux send-keys -t "${session_name}:3" "lazygit" C-m
+}
+
+open_file() {
   local file line="1"
   set -o pipefail
   if [ "$1" != "" ]; then
@@ -174,21 +222,14 @@ open_project() {
   session_name="~${dir#"$HOME"}"
 
   if ! tmux has-session -t "$session_name" 2> /dev/null; then
-    tmux new-session -d -s "$session_name"
-    tmux new-window -t "${session_name}:2"
-    tmux send-keys -t "${session_name}:1" "cd ${dir} && clear" C-m
-    tmux send-keys -t "${session_name}:2" "cd ${dir} && clear" C-m
-    tmux send-keys -t "${session_name}:2" "nvim +1 $file" C-m
-    tmux split-window -h -d -t "${session_name}:2"
-    tmux resize-pane -t "${session_name}:2.2" -R 30
-    tmux send-keys -t "${session_name}:2.2" "cd ${dir} && clear" C-m
+    tmux_project_windows $session_name $dir $file
 
     if [ $is_git_repo -eq 0 ]; then
-      tmux new-window -t "${session_name}:3"
-      tmux send-keys -t "${session_name}:3" "cd ${dir} && clear" C-m
-      tmux send-keys -t "${session_name}:3" "lazygit" C-m
+      tmux_git_window $session_name $dir
     fi
   else
+    # select the nvim pane before checking the window names e.g. if focus is one other pane
+    tmux select-pane -t "${session_name}:2.1"
     window_name=$(tmux list-windows -t "$session_name" -F "#{window_index}:#{window_name}" | grep "^2:");
     if [[ $window_name == "2:nvim" ]]; then
       tmux send-keys -t "${session_name}:2.1" ":n $file" C-m
