@@ -5,7 +5,13 @@ if [[ $KERNEL == "Darwin" ]]; then
   export CLIPBOARD="pbcopy"
 else
   # linux
-  export CLIPBOARD="xclip -selection clipboard"
+  if [ -n "$WSL_INTEROP" ]; then
+    # wsl
+    export CLIPBOARD="/mnt/c/Windows/System32/clip.exe"
+  else
+    # no wsl
+    export CLIPBOARD="xclip -selection clipboard"
+  fi
 fi
 
 # so that we can call functions with $() in the prompt in themes
