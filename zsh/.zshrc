@@ -16,6 +16,8 @@ fi
 
 # so that we can call functions with $() in the prompt in themes
 setopt PROMPT_SUBST
+set -o pipefail
+export FZF_CTRL_R_OPTS="--tmux"
 
 # history
 export HISTSIZE=100000
@@ -42,6 +44,7 @@ export EDITOR='vi'
 
 # aliases
 alias docker=podman
+alias lg=lazygit
 alias vi=nvim
 alias vim=nvim
 alias ll='ls -lah --color'
@@ -127,7 +130,6 @@ bindkey -M vicmd 'y' vi-yank-clipboard
 # TODO: should be able to open pdf nevertheless in preview then
 ff() {
   local file line="1"
-  set -o pipefail
   if [ "$1" != "" ]; then
     file_tmp=$(rg --hidden -n "$1" ~/dev ~/hda ~/dotfiles | fzf) || return 1
     file=$(echo "$file_tmp" | cut -d: -f1)
@@ -153,7 +155,7 @@ ff() {
 }
 
 open_project() {
-  project=$(find ~/dotfiles ~/dev ~/hda -type d -name .git | xargs -I {} dirname {} | sort -u | fzf)
+  project=$(find ~/dotfiles ~/dev ~/hda -type d -name .git | xargs -I {} dirname {} | sort -u | fzf) || return 1
   session_name="~${project#"$HOME"}"
 
   if ! tmux has-session -t "$session_name" 2> /dev/null; then
@@ -177,6 +179,7 @@ tmux_project_windows() {
   session_name=$1
   dir=$2
   file=$3
+  line=$4
   tmux new-session -d -s "$session_name"
   tmux new-window -t "${session_name}:2"
   tmux send-keys -t "${session_name}:1" "cd ${dir} && clear" C-m
@@ -184,7 +187,7 @@ tmux_project_windows() {
   if [[ $file == "" ]]; then
     tmux send-keys -t "${session_name}:2" "nvim" C-m
   else
-    tmux send-keys -t "${session_name}:2" "nvim +1 $file" C-m
+    tmux send-keys -t "${session_name}:2" "nvim +${line} $file" C-m
   fi
   tmux split-window -h -d -t "${session_name}:2"
   tmux resize-pane -t "${session_name}:2.2" -R 30
@@ -200,9 +203,14 @@ tmux_git_window() {
   tmux send-keys -t "${session_name}:3" "lazygit" C-m
 }
 
+open_match() {
+  echo "Pattern: "
+  read pattern
+  open_file "$pattern"
+}
+
 open_file() {
   local file line="1"
-  set -o pipefail
   if [ "$1" != "" ]; then
     file_tmp=$(rg --hidden -n "$1" ~/dev ~/hda ~/dotfiles | fzf) || return 1
     file=$(echo "$file_tmp" | cut -d: -f1)
@@ -222,7 +230,7 @@ open_file() {
   session_name="~${dir#"$HOME"}"
 
   if ! tmux has-session -t "$session_name" 2> /dev/null; then
-    tmux_project_windows $session_name $dir $file
+    tmux_project_windows $session_name $dir $file $line
 
     if [ $is_git_repo -eq 0 ]; then
       tmux_git_window $session_name $dir
@@ -232,9 +240,9 @@ open_file() {
     tmux select-pane -t "${session_name}:2.1"
     window_name=$(tmux list-windows -t "$session_name" -F "#{window_index}:#{window_name}" | grep "^2:");
     if [[ $window_name == "2:nvim" ]]; then
-      tmux send-keys -t "${session_name}:2.1" ":n $file" C-m
+      tmux send-keys -t "${session_name}:2.1" ":n $file +${line}" C-m
     else
-      tmux send-keys -t "${session_name}:2.1" "nvim +1 $file" C-m
+      tmux send-keys -t "${session_name}:2.1" "nvim +${line} $file" C-m
     fi
   fi
 
@@ -264,7 +272,10 @@ _comp_options+=(globdots)
 # Set up fzf key bindings and fuzzy completion
 source <(fzf --zsh)
 
-podman completion zsh -f "$ZSH/completion/_podman"
+# either this to generate the completion functions in a file belonging to fpath
+# podman completion zsh -f "$ZSH/completion/_podman"
+# or directly source the output without extra file
+source <(podman completion zsh)
 
 # thats what terraform adds to the zshrc when adding terraform autocompletion
 autoload -U +X bashcompinit && bashcompinit
