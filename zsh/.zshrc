@@ -240,7 +240,7 @@ open_file() {
     tmux select-pane -t "${session_name}:2.1"
     window_name=$(tmux list-windows -t "$session_name" -F "#{window_index}:#{window_name}" | grep "^2:");
     if [[ $window_name == "2:nvim" ]]; then
-      tmux send-keys -t "${session_name}:2.1" ":n $file +${line}" C-m
+      tmux send-keys -t "${session_name}:2.1" ":n +${line} $file" C-m
     else
       tmux send-keys -t "${session_name}:2.1" "nvim +${line} $file" C-m
     fi
