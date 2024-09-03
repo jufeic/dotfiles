@@ -3,6 +3,7 @@ export KERNEL=$(uname)
 if [[ $KERNEL == "Darwin" ]]; then
   # macos
   export CLIPBOARD="pbcopy"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
 else
   # linux
   if [ -n "$WSL_INTEROP" ]; then
@@ -12,6 +13,7 @@ else
     # no wsl
     export CLIPBOARD="xclip -selection clipboard"
   fi
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 # so that we can call functions with $() in the prompt in themes
@@ -118,7 +120,7 @@ cursor_mode
 
 vi-yank-clipboard() {
   zle vi-yank
-  echo "$CUTBUFFER" | $CLIPBOARD
+  echo -n "$CUTBUFFER" | $CLIPBOARD
 }
 
 zle -N vi-yank-clipboard
@@ -282,6 +284,6 @@ autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /opt/homebrew/bin/terraform terraform
 
 # zsh plugins
-# the highlighting need to be sourced at the very end of .zshrc
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# the highlighting need to be sourced at the VERY end of .zshrc
+source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
