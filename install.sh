@@ -28,3 +28,5 @@ if [[ $(uname) == "Linux" ]]; then
 fi
 
 $(brew --prefix)/bin/stow -v 2 -d $HOME/dotfiles -t $HOME -S zsh tmux
+
+touch $HOME/.zsh_history
