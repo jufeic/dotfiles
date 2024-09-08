@@ -20,8 +20,11 @@ fi
 setopt PROMPT_SUBST
 set -o pipefail
 export FZF_CTRL_R_OPTS="--tmux"
+export BAT_THEME="Solarized (dark)"
+export RG_DIRS="$HOME/dotfiles $HOME/hda $HOME/dev"
 
 # history
+export HISTFILE=$HOME/.zsh_history
 export HISTSIZE=100000
 export SAVEHIST=$HISTSIZE
 
@@ -205,20 +208,34 @@ tmux_git_window() {
   tmux send-keys -t "${session_name}:3" "lazygit" C-m
 }
 
-open_match() {
-  echo "Pattern: "
-  read pattern
-  open_file "$pattern"
-}
-
 open_file() {
   local file line="1"
   if [ "$1" != "" ]; then
-    file_tmp=$(rg --hidden -n "$1" ~/dev ~/hda ~/dotfiles | fzf) || return 1
+    rm -f /tmp/rg-fzf-{r,f}
+    file_tmp=$(
+      fzf \
+	  --ansi \
+	  --layout reverse \
+	  --delimiter : \
+	  --preview 'bat --tabs 2 --color always {1} --highlight-line {2}' \
+	  --preview-window '+{2}+3/3,~3' \
+	  --bind 'start:reload(echo $RG_DIRS | xargs rg --hidden --smart-case -n '' || true)+unbind(ctrl-r)' \
+	  --bind 'change:reload:sleep 0.2;echo $RG_DIRS | xargs rg --hidden --smart-case -n {q} || true' \
+	  --bind 'ctrl-f:unbind(change,ctrl-f)+change-prompt(fzf> )+enable-search+rebind(ctrl-r)+transform-query(echo {q} > /tmp/rg-fzf-r; cat /tmp/rg-fzf-f)' \
+          --bind 'ctrl-r:unbind(ctrl-r)+change-prompt(ripgrep> )+disable-search+reload(echo $RG_DIRS | xargs rg --hidden --smart-case -n {q} || true)+rebind(change,ctrl-f)+transform-query(echo {q} > /tmp/rg-fzf-f; cat /tmp/rg-fzf-r)' \
+	  --disabled \
+          --prompt 'ripgrep> '
+    ) || return 1
     file=$(echo "$file_tmp" | cut -d: -f1)
     line=$(echo "$file_tmp" | cut -d: -f2)
   else
-    file=$(rg --files --hidden -g '!.git' -g '!.git/**' -g '!*.pdf' ~/dev ~/hda ~/dotfiles | fzf) || return 1
+    file=$(
+      fzf \
+	  --ansi \
+	  --layout reverse \
+	  --preview 'bat --tabs 2 --color always {}' \
+	  --bind 'start:reload(echo $RG_DIRS | xargs rg --files --hidden -g "!*.pdf" --smart-case || true)'
+    ) || return 1
   fi
 
   dir=$(dirname "$file")
