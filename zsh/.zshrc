@@ -280,10 +280,10 @@ if [ -f ~/.secrets ]; then
 	source ~/.secrets
 fi
 
-# custom commands
-# if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-if command -v tmux &> /dev/null && ( ! tmux info &> /dev/null || [ -z "$TMUX" ] ); then
-	tmux attach -t dev || tmux new -s dev
+if [[ $TERM_PROGRAM != "vscode" ]]; then
+	if command -v tmux &> /dev/null && ( ! tmux info &> /dev/null || [ -z "$TMUX" ] ); then
+		tmux attach -t dev || tmux new -s dev
+	fi
 fi
 
 # configure completion

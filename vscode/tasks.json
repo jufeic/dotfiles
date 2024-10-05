@@ -26,8 +26,6 @@
 				"TMUX",
 				"-u",
 				"FZF_CTRL_R_OPTS",
-				"-u",
-				"TERM_PROGRAM",
 				"/bin/zsh",
 				"-l"
 			],
