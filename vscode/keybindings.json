@@ -65,28 +65,28 @@
     {
         "key": "k",
         "command": "list.focusUp",
-        "when": "explorerViewletFocus"
+				"when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
     },
     {
         "key": "j",
         "command": "list.focusDown",
-        "when": "explorerViewletFocus"
-    },
-    {
-        "key": "h",
-        "command": "list.collapse",
-        "when": "explorerViewletFocus"
-    },
-    {
-        "key": "l",
-        "command": "list.expand",
-        "when": "explorerViewletFocus && !inputFocus"
+				"when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
     },
     {
         "key": "o",
         "command": "list.select",
-        "when": "explorerViewletVisible && !inputFocus"
+				"when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
     },
+		{
+				"key": "shift+r",
+				"command": "renameFile",
+				"when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+		},
+		{
+				"key": "p",
+				"command": "list.collapse",
+				"when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+		},
     {
         "key": "ctrl+space h",
         "command": "workbench.action.navigateLeft"
@@ -105,8 +105,8 @@
     },
     {
         "key": "shift+5",               // '%' key
-        "command": "explorer.newFile",   // Command to create a new file
-        "when": "explorerViewletVisible && explorerViewletFocus"  // Only works when Explorer is focused
+        "command": "explorer.newFile",   // Command to create a new file or folder
+				"when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
       },
     {
         "key": "ctrl+space s",

@@ -33,5 +33,6 @@
 "editor.detectIndentation": false,
 "editor.insertSpaces": false,
 "cmake.showOptionsMovedNotification": false,
-"workbench.colorTheme": "One Dark Pro"
+"workbench.colorTheme": "One Dark Pro",
+"vim.useSystemClipboard": true
 }
