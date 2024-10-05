@@ -31,7 +31,32 @@ set_return_code_color() {
     fi
 }
 
-precmd_functions+=(set_return_code_color)
+EXTRA_NEWLINE=""
+screen_cleared=true
 
-PROMPT='${BLUE}%d${RESET} $(git_branch)${NEWLINE}${RETURN_PROMPT_COLOR}${PROMPT_CHAR}${RESET} '
+# Define a ZLE function to handle screen clearing
+zle -N clear_screen
+clear_screen() {
+    # set the extra newline here because precmd functions not called for ctrl-l but
+    # the prompt is new loaded
+    EXTRA_NEWLINE=""
+    screen_cleared=false
+    zle clear-screen
+}
+
+# Set up key binding for Ctrl-L to use the custom clear_screen function
+bindkey '^L' clear_screen
+
+add_newline() {
+    if [[ $screen_cleared == true ]]; then
+        EXTRA_NEWLINE=""
+        screen_cleared=false
+    else
+        EXTRA_NEWLINE=$'\n'
+    fi
+}
+
+precmd_functions+=(set_return_code_color add_newline)
+
+PROMPT='${EXTRA_NEWLINE}${BLUE}%d${RESET} $(git_branch)${NEWLINE}${RETURN_PROMPT_COLOR}${PROMPT_CHAR}${RESET} '
 RPROMPT=''
