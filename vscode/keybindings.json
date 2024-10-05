@@ -1,0 +1,223 @@
+[
+    {
+        "key": "pageup",
+        "command": "workbench.action.focusActiveEditorGroup"
+    },
+    {
+        "key": "cmd+down",
+        "command": "-workbench.action.terminal.focus",
+        "when": "accessibilityModeEnabled && accessibleViewOnLastLine && terminalHasBeenCreated && accessibleViewCurrentProviderId == 'terminal' || accessibilityModeEnabled && accessibleViewOnLastLine && terminalProcessSupported && accessibleViewCurrentProviderId == 'terminal'"
+    },
+    {
+        "key": "escape",
+        "command": "extension.vim_escape",
+        "when": "editorTextFocus && vim.active && !inDebugRepl"
+    },
+    {
+        "key": "pagedown",
+        "command": "-notebook.cell.cursorPageDown",
+        "when": "editorTextFocus && inputFocus && notebookEditorFocused"
+    },
+    {
+        "key": "pagedown",
+        "command": "-editor.action.pageDownHover",
+        "when": "editorHoverFocused"
+    },
+    {
+        "key": "pagedown",
+        "command": "-workbench.action.terminal.scrollDownPage",
+        "when": "terminalFocusInAny && terminalHasBeenCreated && !terminalAltBufferActive || terminalFocusInAny && terminalProcessSupported && !terminalAltBufferActive"
+    },
+    {
+        "key": "pagedown",
+        "command": "-cursorPageDown",
+        "when": "textInputFocus"
+    },
+    {
+        "key": "pagedown",
+        "command": "-list.focusPageDown",
+        "when": "listFocus && !inputFocus && !treestickyScrollFocused"
+    },
+    {
+        "key": "pagedown",
+        "command": "-notifications.focusLastToast",
+        "when": "notificationFocus && notificationToastsVisible"
+    },
+    {
+        "key": "pagedown",
+        "command": "-selectNextPageSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion"
+    },
+    {
+        "key": "pagedown",
+        "command": "-workbench.action.interactivePlayground.pageDown",
+        "when": "interactivePlaygroundFocus && !editorTextFocus"
+    },
+    {
+        "key": "pagedown",
+        "command": "-workbench.action.terminal.selectNextPageSuggestion",
+        "when": "terminalFocus && terminalHasBeenCreated && terminalIsOpen && terminalSuggestWidgetVisible || terminalFocus && terminalIsOpen && terminalProcessSupported && terminalSuggestWidgetVisible"
+    },
+    {
+        "key": "pagedown",
+        "command": "workbench.action.terminal.focus"
+    },
+    {
+        "key": "k",
+        "command": "list.focusUp",
+        "when": "explorerViewletFocus"
+    },
+    {
+        "key": "j",
+        "command": "list.focusDown",
+        "when": "explorerViewletFocus"
+    },
+    {
+        "key": "h",
+        "command": "list.collapse",
+        "when": "explorerViewletFocus"
+    },
+    {
+        "key": "l",
+        "command": "list.expand",
+        "when": "explorerViewletFocus && !inputFocus"
+    },
+    {
+        "key": "o",
+        "command": "list.select",
+        "when": "explorerViewletVisible && !inputFocus"
+    },
+    {
+        "key": "ctrl+space h",
+        "command": "workbench.action.navigateLeft"
+    },
+    {
+        "key": "ctrl+space l",
+        "command": "workbench.action.navigateRight"
+    },
+    {
+        "key": "ctrl+space k",
+        "command": "workbench.action.navigateUp"
+    },
+    {
+        "key": "ctrl+space j",
+        "command": "workbench.action.navigateDown"
+    },
+    {
+        "key": "shift+5",               // '%' key
+        "command": "explorer.newFile",   // Command to create a new file
+        "when": "explorerViewletVisible && explorerViewletFocus"  // Only works when Explorer is focused
+      },
+    {
+        "key": "ctrl+space s",
+        "command": "workbench.action.quickSwitchWindow"
+    },
+    {
+        "key": "ctrl+space",
+        "command": "-editor.action.triggerSuggest",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+space",
+        "command": "-extension.vim_ctrl+space",
+        "when": "editorTextFocus && vim.active && vim.use<C-space> && !inDebugRepl && vim.mode != 'Insert'"
+    },
+    {
+        "key": "ctrl+space",
+        "command": "-focusSuggestion",
+        "when": "suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion"
+    },
+    {
+        "key": "ctrl+space",
+        "command": "-toggleSuggestionDetails",
+        "when": "suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && textInputFocus"
+    },
+    {
+        "key": "ctrl+space",
+        "command": "-workbench.action.terminal.sendSequence",
+        "when": "terminalFocus && terminalShellIntegrationEnabled && !accessibilityModeEnabled && terminalShellType == 'pwsh'"
+    },
+    {
+        "key": "ctrl+space",
+        "command": "-workbench.action.terminal.sendSequence",
+        "when": "config.terminal.integrated.suggest.enabled && terminalFocus && terminalShellIntegrationEnabled && !accessibilityModeEnabled && terminalShellType == 'pwsh'"
+    },
+    {
+        "key": "ctrl+space",
+        "command": "-editor.action.triggerSuggest",
+        "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
+    },
+    {
+        "key": "ctrl+z",
+        "command": "-extension.vim_ctrl+z",
+        "when": "editorTextFocus && vim.active && vim.use<C-z> && !inDebugRepl"
+    },
+    {
+        "key": "shift+k",
+        "command": "editor.action.showHover",
+        "when": "editorHasHover"
+    },
+    {
+        "key": "shift+k",
+        "command": "editor.action.showHover",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "cmd+k cmd+i",
+        "command": "-editor.action.showHover",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+r",
+        "command": "-workbench.action.openRecent"
+    },
+    {
+        "key": "ctrl+space 2",
+				"command": "runCommands",
+				"args": {
+					"commands": [
+						{
+							"command": "workbench.action.terminal.focusAtIndex1"
+						},
+						{
+							"command": "workbench.action.toggleMaximizedPanel"
+						},
+						{
+							"command": "workbench.action.focusActiveEditorGroup"
+						}
+					]
+				}
+      },
+    {
+        "key": "ctrl+space 3",
+				"command": "runCommands",
+				"args": {
+					"commands": [
+						{
+							"command": "workbench.action.terminal.focusAtIndex2"
+						},
+						{
+							"command": "workbench.action.toggleMaximizedPanel"
+						}
+					]
+				}
+      },
+			    {
+        "key": "cmd+shift+w",
+				"command": "runCommands",
+				"args": {
+					"commands": [
+						{
+							"command": "workbench.action.closePanel"
+						},
+						{
+							"command": "workbench.action.closeWindow"
+						}
+					]
+				}
+			},
+			{
+				"key": "shift+cmd+w",
+				"command": "-workbench.action.closeWindow"
+			}
+]

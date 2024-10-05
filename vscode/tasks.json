@@ -1,0 +1,53 @@
+{
+	"version": "2.0.0",
+	"presentation": {
+		"reveal": "never",
+		"focus": false,
+		"panel": "shared",
+		"clear": false
+	},
+	"tasks": [
+    {
+      "label": "Create terminals",
+      "dependsOn": [
+        "zsh",
+        "lazygit"
+      ],
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    },
+    {
+      "label": "zsh",
+      "type": "shell",
+      "command": "env",
+			"args": [
+				"-u",
+				"TMUX",
+				"-u",
+				"FZF_CTRL_R_OPTS",
+				"-u",
+				"TERM_PROGRAM",
+				"/bin/zsh",
+				"-l"
+			],
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+				"echo": false,
+        "clear": false
+      }
+    },
+    {
+      "label": "lazygit",
+      "type": "shell",
+      "command": "lazygit",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+				"echo": false,
+        "clear": false
+      }
+    }
+  ]
+}

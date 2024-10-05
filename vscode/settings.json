@@ -1,0 +1,37 @@
+{
+    "editor.fontSize": 16,
+    "workbench.startupEditor": "none",
+    "terminal.integrated.fontSize": 16,
+    "editor.minimap.enabled": false,
+    "vim.vimrc.path": "$HOME/.vimrc",
+    "workbench.editor.closeEmptyGroups": false,
+    "vim.smartRelativeLine": true,
+    "editor.tabSize": 2,
+    "editor.cursorBlinking": "solid",
+    "vim.highlightedyank.textColor": "#f47e2c",
+    "vim.highlightedyank.enable": true,
+    "vim.history": 100,
+    "vim.highlightedyank.duration": 220,
+		"window.newWindowDimensions": "maximized",
+    "workbench.colorCustomizations": {
+    "editor.background": "#1E1E1E",  // or any color code you want
+    "sideBar.background": "#1E1E1E",  // or any color code you want
+    "terminal.background": "#1E1E1E"
+},
+"vim.normalModeKeyBindingsNonRecursive": [    {
+    "before": ["u"],
+    "commands": ["undo"]
+  },
+  {
+    "before": ["C-r"],
+    "commands": ["redo"]
+  }
+],
+"editor.occurrencesHighlight": "off",
+"terminal.integrated.copyOnSelection": true,
+"editor.renderWhitespace": "boundary",
+"editor.detectIndentation": false,
+"editor.insertSpaces": false,
+"cmake.showOptionsMovedNotification": false,
+"workbench.colorTheme": "One Dark Pro"
+}
