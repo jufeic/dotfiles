@@ -14,18 +14,44 @@
     "vim.highlightedyank.duration": 220,
 		"window.newWindowDimensions": "maximized",
     "workbench.colorCustomizations": {
-    "editor.background": "#1E1E1E",  // or any color code you want
-    "sideBar.background": "#1E1E1E",  // or any color code you want
-    "terminal.background": "#1E1E1E"
+			"editor.background": "#1E1E1E",  // or any color code you want
+			"sideBar.background": "#1E1E1E",  // or any color code you want
+			"terminal.background": "#1E1E1E",
+			"editorHoverWidget.background": "#313134"
 },
 "vim.normalModeKeyBindingsNonRecursive": [    {
     "before": ["u"],
-    "commands": ["undo"]
+    "commands": ["undo"],
+		"silent": true
   },
   {
     "before": ["C-r"],
-    "commands": ["redo"]
+    "commands": ["redo"],
+		"silent": true
   }
+],
+"vim.visualModeKeyBindingsNonRecursive": [
+    {
+        "before": ["shift+j"],
+				"commands": [ "editor.action.moveLinesDownAction" ],
+				"silent": true
+    },
+    {
+        "before": ["shift+k"],
+				"commands": [ "editor.action.moveLinesUpAction" ],
+				"silent": true
+    },
+		{
+			"before": [
+					"p"
+			],
+			"after": [
+					"p",
+					"g",
+					"v",
+					"y"
+			]
+	}
 ],
 "editor.occurrencesHighlight": "off",
 "terminal.integrated.copyOnSelection": true,
@@ -34,5 +60,8 @@
 "editor.insertSpaces": false,
 "cmake.showOptionsMovedNotification": false,
 "workbench.colorTheme": "One Dark Pro",
-"vim.useSystemClipboard": true
+"vim.useSystemClipboard": true,
+"window.title": "${rootName}${separator}${activeEditorShort}",
+"window.commandCenter": false,
+"workbench.layoutControl.enabled": false
 }

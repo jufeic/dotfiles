@@ -107,7 +107,7 @@
         "key": "shift+5",               // '%' key
         "command": "explorer.newFile",   // Command to create a new file or folder
 				"when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
-      },
+		},
     {
         "key": "ctrl+space s",
         "command": "workbench.action.quickSwitchWindow"
@@ -152,16 +152,16 @@
         "command": "-extension.vim_ctrl+z",
         "when": "editorTextFocus && vim.active && vim.use<C-z> && !inDebugRepl"
     },
-    {
-        "key": "shift+k",
-        "command": "editor.action.showHover",
-        "when": "editorHasHover"
-    },
-    {
-        "key": "shift+k",
-        "command": "editor.action.showHover",
-        "when": "editorTextFocus"
-    },
+		{
+			"key": "shift+k",
+			"command": "editor.action.showHover",
+			"when": "editorHasHover && vim.mode != 'VisualLine'"
+		},
+		{
+			"key": "shift+k",
+			"command": "editor.action.showHover",
+			"when": "editorTextFocus && vim.mode != 'VisualLine'"
+		},
     {
         "key": "cmd+k cmd+i",
         "command": "-editor.action.showHover",
