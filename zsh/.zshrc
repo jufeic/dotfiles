@@ -19,8 +19,11 @@ fi
 # so that we can call functions with $() in the prompt in themes
 setopt PROMPT_SUBST
 set -o pipefail
-export FZF_CTRL_R_OPTS="--tmux"
-export BAT_THEME="Solarized (dark)"
+if [[ $TERM_PROGRAM == "tmux" ]]; then
+  export FZF_CTRL_R_OPTS="--tmux"
+fi
+# old: solarized
+export BAT_THEME="TwoDark"
 export RG_DIRS="$HOME/dotfiles $HOME/hda $HOME/dev"
 
 # history
@@ -95,7 +98,6 @@ for km in viopp visual; do
 done
 
 cursor_mode() {
-  # See https://ttssh2.osdn.jp/manual/4/en/usage/tips/vim.html for cursor shapes
   cursor_block='\e[2 q'
   cursor_beam='\e[6 q'
 
@@ -162,6 +164,7 @@ ff() {
 open_project() {
   project=$(find ~/dotfiles ~/dev ~/hda -type d -name .git | xargs -I {} dirname {} | sort -u | fzf) || return 1
   session_name="~${project#"$HOME"}"
+  code $project
 
   if ! tmux has-session -t "$session_name" 2> /dev/null; then
     tmux_project_windows $session_name $project ""
@@ -187,8 +190,8 @@ tmux_project_windows() {
   line=$4
   tmux new-session -d -s "$session_name"
   tmux new-window -t "${session_name}:2"
-  tmux send-keys -t "${session_name}:1" "cd ${dir} && clear" C-m
-  tmux send-keys -t "${session_name}:2" "cd ${dir} && clear" C-m
+  tmux send-keys -t "${session_name}:1" "cd ${dir}" C-m C-l
+  tmux send-keys -t "${session_name}:2" "cd ${dir}" C-m C-l
   if [[ $file == "" ]]; then
     tmux send-keys -t "${session_name}:2" "nvim" C-m
   else
@@ -196,15 +199,16 @@ tmux_project_windows() {
   fi
   tmux split-window -h -d -t "${session_name}:2"
   tmux resize-pane -t "${session_name}:2.2" -R 30
-  tmux send-keys -t "${session_name}:2.2" "cd ${dir} && clear" C-m
-
+  # the C-l is for the prompt logic for extra newline since after
+  # executing the cd... command there would be an extra newline
+  tmux send-keys -t "${session_name}:2.2" "cd ${dir}" C-m C-l
 }
 
 tmux_git_window() {
   session_name=$1
   dir=$2
   tmux new-window -t "${session_name}:3"
-  tmux send-keys -t "${session_name}:3" "cd ${dir} && clear" C-m
+  tmux send-keys -t "${session_name}:3" "cd ${dir}" C-m C-l
   tmux send-keys -t "${session_name}:3" "lazygit" C-m
 }
 
@@ -214,6 +218,7 @@ open_file() {
     rm -f /tmp/rg-fzf-{r,f}
     file_tmp=$(
       fzf \
+	  --keep-right \
 	  --ansi \
 	  --layout reverse \
 	  --delimiter : \
@@ -247,6 +252,7 @@ open_file() {
   fi
 
   session_name="~${dir#"$HOME"}"
+  code $dir -g "${file}:${line}"
 
   if ! tmux has-session -t "$session_name" 2> /dev/null; then
     tmux_project_windows $session_name $dir $file $line
@@ -277,7 +283,7 @@ fi
 # custom commands
 # if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
 if command -v tmux &> /dev/null && ( ! tmux info &> /dev/null || [ -z "$TMUX" ] ); then
-  tmux attach -t dev || tmux new -s dev
+	tmux attach -t dev || tmux new -s dev
 fi
 
 # configure completion
@@ -299,6 +305,8 @@ source <(podman completion zsh)
 # thats what terraform adds to the zshrc when adding terraform autocompletion
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /opt/homebrew/bin/terraform terraform
+
+export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
 
 # zsh plugins
 # the highlighting need to be sourced at the VERY end of .zshrc
