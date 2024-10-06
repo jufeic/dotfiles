@@ -155,12 +155,12 @@
 		{
 			"key": "shift+k",
 			"command": "editor.action.showHover",
-			"when": "editorHasHover && vim.mode != 'VisualLine'"
+			"when": "editorHasHover && vim.mode != 'VisualLine' && vim.mode != 'Insert'"
 		},
 		{
 			"key": "shift+k",
 			"command": "editor.action.showHover",
-			"when": "editorTextFocus && vim.mode != 'VisualLine'"
+			"when": "editorHasHover && vim.mode != 'VisualLine' && vim.mode != 'Insert'"
 		},
     {
         "key": "cmd+k cmd+i",
