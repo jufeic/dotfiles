@@ -300,7 +300,7 @@ source <(fzf --zsh)
 # either this to generate the completion functions in a file belonging to fpath
 # podman completion zsh -f "$ZSH/completion/_podman"
 # or directly source the output without extra file
-if [ command -v podman &> /dev/null ]; then
+if command -v podman &> /dev/null; then
 	source <(podman completion zsh)
 fi
 
