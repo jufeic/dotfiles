@@ -27,6 +27,19 @@ if [[ $(uname) == "Linux" ]]; then
 	# in macos zsh is already preinstalled
 	brew install zsh
 	chsh -s "$(brew --prefix)/bin/zsh"
+	# wsl
+	if [ -n "$WSL_INTEROP" ]; then
+		# issue a code command to trigger installing the vscode server if not already installed
+		code --version
+		# make sure that the directory exists before symlinking
+		mkdir -p $HOME/.vscode-server/data/Machine
+		$(brew --prefix)/bin/stow -v 2 -d $HOME/dotfiles -t "$HOME/.vscode-server/data/Machine" -S vscode
+
+		# change into a windows directory before executing the cmd.exe command
+		# this will prevent path warnings
+		cd "$(dirname "$(which code)")"
+		xargs -n 1 cmd.exe /c 'C:\Program Files\Microsoft VS Code\bin\code' --install-extension < $HOME/dotfiles/vscode/vscode-extensions.txt
+	fi
 fi
 
 $(brew --prefix)/bin/stow -v 2 -d $HOME/dotfiles -t $HOME -S zsh tmux ripgrep
@@ -35,9 +48,7 @@ $(brew --prefix)/bin/stow -v 2 -d $HOME/dotfiles -t $HOME -S zsh tmux ripgrep
 # path just generalize it under a vscode folder and the target is then dependent on OS
 if [[ $(uname) == "Darwin" ]]; then
 	$(brew --prefix)/bin/stow -v 2 -d $HOME/dotfiles -t "$HOME/Library/Application Support/Code/User" -S vscode
+	xargs -n 1 code --install-extension < $HOME/dotfiles/vscode/vscode-extensions.txt
 fi
-
-# install vscode extensions
-xargs -n 1 code --install-extension < $HOME/dotfiles/vscode/vscode-extensions.txt
 
 touch $HOME/.zsh_history
