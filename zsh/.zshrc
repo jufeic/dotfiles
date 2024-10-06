@@ -300,11 +300,13 @@ source <(fzf --zsh)
 # either this to generate the completion functions in a file belonging to fpath
 # podman completion zsh -f "$ZSH/completion/_podman"
 # or directly source the output without extra file
-source <(podman completion zsh)
+if [ command -v podman &> /dev/null ]; then
+	source <(podman completion zsh)
+fi
 
 # thats what terraform adds to the zshrc when adding terraform autocompletion
 autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /opt/homebrew/bin/terraform terraform
+complete -o nospace -C $(brew --prefix)/bin/terraform terraform
 
 export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
 

@@ -21,7 +21,7 @@ else
 	eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
-brew install tmux fzf ripgrep lazygit bat stow neovim zsh-syntax-highlighting
+brew install tmux fzf ripgrep lazygit bat stow neovim zsh-syntax-highlighting terraform
 
 if [[ $(uname) == "Linux" ]]; then
 	# in macos zsh is already preinstalled
