@@ -4,7 +4,6 @@
     "terminal.integrated.fontSize": 16,
     "editor.minimap.enabled": false,
     "vim.vimrc.path": "$HOME/.vimrc",
-    "workbench.editor.closeEmptyGroups": false,
     "vim.smartRelativeLine": true,
     "editor.tabSize": 2,
     "editor.cursorBlinking": "solid",
