@@ -28,7 +28,24 @@
     "before": ["C-r"],
     "commands": ["redo"],
 		"silent": true
-  }
+  },
+  {
+    "before": ["<leader>", "f"],
+    "commands": ["workbench.action.quickOpen"],
+		"silent": true
+  },
+	{
+		"before": ["<leader>", "s"],
+		"after": ["<leader>", "<leader>", "s"]
+	},
+	{
+		"before": ["<leader>", "w"],
+		"after": ["<leader>", "<leader>", "w"]
+	},
+	{
+		"before": ["<leader>", "j"],
+		"after": ["<leader>", "<leader>", "j"]
+	}
 ],
 "vim.visualModeKeyBindingsNonRecursive": [
     {
@@ -63,5 +80,7 @@
 "vim.useSystemClipboard": true,
 "window.title": "${rootName}${separator}${activeEditorShort}",
 "window.commandCenter": false,
-"workbench.layoutControl.enabled": false
+"workbench.layoutControl.enabled": false,
+"vim.easymotion": true,
+"vim.leader": "<space>"
 }
