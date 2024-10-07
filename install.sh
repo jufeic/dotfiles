@@ -26,19 +26,32 @@ brew install tmux fzf ripgrep lazygit bat stow neovim zsh-syntax-highlighting te
 if [[ $(uname) == "Linux" ]]; then
 	# in macos zsh is already preinstalled
 	brew install zsh
+	# if zsh is not in the allowed shells, add it
+	if ! grep -Fxq "$(brew --prefix)/bin/zsh" /etc/shells; then
+		echo "$(brew --prefix)/bin/zsh" | sudo tee -a /etc/shells
+	fi
 	chsh -s "$(brew --prefix)/bin/zsh"
 	# wsl
 	if [ -n "$WSL_INTEROP" ]; then
 		# issue a code command to trigger installing the vscode server if not already installed
 		code --version
-		# make sure that the directory exists before symlinking
-		mkdir -p $HOME/.vscode-server/data/Machine
-		$(brew --prefix)/bin/stow -v 2 -d $HOME/dotfiles -t "$HOME/.vscode-server/data/Machine" -S vscode
-
 		# change into a windows directory before executing the cmd.exe command
 		# this will prevent path warnings
 		cd "$(dirname "$(which code)")"
-		xargs -n 1 cmd.exe /c 'C:\Program Files\Microsoft VS Code\bin\code' --install-extension < $HOME/dotfiles/vscode/vscode-extensions.txt
+		# make sure that the directory exists before symlinking
+		# mkdir -p $HOME/.vscode-server/data/Machine
+		# $(brew --prefix)/bin/stow -v 2 -d $HOME/dotfiles -t "$HOME/.vscode-server/data/Machine" -S vscode
+		windows_username="$(cmd.exe /c "echo %USERNAME%")"
+		for file in "$HOME/dotfiles/vscode"/*; do
+			file_name="$(basename $file)"
+			cmd.exe /c "mklink C:\\Users\\$windows_username\\AppData\\Roaming\\Code\\User\\$file_name \\\\wsl$\\$WSL_DISTRO_NAME\\home\\$(id -un)\\dotfiles\\vscode\\$file_name"
+		done
+
+		code_wsl_path="$(which code)"
+		code_windows_path="${code_wsl_path#/mnt/}"
+		code_windows_path="${code_windows_path//\//\\}"
+		code_windows_path="$(echo "$code_windows_path" | sed 's/^\(.\)/\U\1:/')"
+		xargs -n 1 cmd.exe /c "$code_windows_path" --install-extension < $HOME/dotfiles/vscode/vscode-extensions.txt
 	fi
 fi
 

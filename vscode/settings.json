@@ -1,4 +1,7 @@
 {
+		"security.allowedUNCHosts": [
+			"wsl$"
+		],
     "editor.fontSize": 16,
     "workbench.startupEditor": "none",
     "terminal.integrated.fontSize": 16,
