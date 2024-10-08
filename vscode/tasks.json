@@ -4,48 +4,19 @@
 		"reveal": "never",
 		"focus": false,
 		"panel": "shared",
-		"clear": false
+		"clear": false,
+		"echo": false
 	},
 	"tasks": [
-    {
-      "label": "Create terminals",
-      "dependsOn": [
-        "zsh",
-        "lazygit"
-      ],
-      "runOptions": {
-        "runOn": "folderOpen"
-      }
-    },
-    {
-      "label": "zsh",
-      "type": "shell",
-      "command": "env",
-			"args": [
-				"-u",
-				"TMUX",
-				"-u",
-				"FZF_CTRL_R_OPTS",
-				"/bin/zsh",
-				"-l"
-			],
-      "isBackground": true,
-      "problemMatcher": [],
-      "presentation": {
-				"echo": false,
-        "clear": false
-      }
-    },
     {
       "label": "lazygit",
       "type": "shell",
       "command": "lazygit",
       "isBackground": true,
       "problemMatcher": [],
-      "presentation": {
-				"echo": false,
-        "clear": false
-      }
+			"presentation": {
+				"focus": true
+			}
     }
   ]
 }

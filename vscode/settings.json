@@ -37,6 +37,12 @@
 		"silent": true
   },
 	{
+    "before": ["<leader>", "r", "n"],
+    "commands": ["editor.action.rename"],
+		"when": "editorHasRenameProvider && editorTextFocus && !editorReadonly",
+		"silent": true
+  },
+	{
 		"before": ["<leader>", "s"],
 		"after": ["<leader>", "<leader>", "s"]
 	},
@@ -85,5 +91,33 @@
 "workbench.layoutControl.enabled": false,
 "vim.easymotion": true,
 "vim.leader": "<space>",
-"terminal.integrated.hideOnStartup": "always"
+"terminal.integrated.hideOnStartup": "always",
+"terminal.integrated.profiles.osx": {
+	"zsh": {
+		"path": "env",
+		"args": [
+			"-u",
+			"TMUX",
+			"-u",
+			"FZF_CTRL_R_OPTS",
+			"/bin/zsh",
+			"-l"
+		]
+	}
+},
+"terminal.integrated.profiles.linux": {
+	"zsh": {
+		"path": "env",
+		"args": [
+			"-u",
+			"TMUX",
+			"-u",
+			"FZF_CTRL_R_OPTS",
+			"/bin/zsh",
+			"-l"
+		]
+	}
+},
+"terminal.integrated.defaultProfile.osx": "zsh",
+"terminal.integrated.defaultProfile.linux": "zsh"
 }

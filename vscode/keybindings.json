@@ -188,18 +188,29 @@
 					]
 				}
       },
-    {
+			{
         "key": "ctrl+space 3",
 				"command": "runCommands",
 				"args": {
 					"commands": [
 						{
-							"command": "workbench.action.terminal.focusAtIndex2"
+							"command": "workbench.action.toggleMaximizedPanel"
 						},
 						{
-							"command": "workbench.action.toggleMaximizedPanel"
+							"command": "workbench.action.tasks.runTask",
+							"args": "lazygit"
 						}
 					]
 				}
-      }
+			},
+			{
+				"key": "ctrl+space c",
+				"command": "workbench.action.terminal.new",
+				"when": "terminalProcessSupported || terminalWebExtensionContributedProfile"
+			},
+			{
+				"key": "ctrl+shift+`",
+				"command": "-workbench.action.terminal.new",
+				"when": "terminalProcessSupported || terminalWebExtensionContributedProfile"
+			}
 ]
