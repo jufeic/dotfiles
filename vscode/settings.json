@@ -84,5 +84,6 @@
 "window.commandCenter": false,
 "workbench.layoutControl.enabled": false,
 "vim.easymotion": true,
-"vim.leader": "<space>"
+"vim.leader": "<space>",
+"terminal.integrated.hideOnStartup": "always"
 }

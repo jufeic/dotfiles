@@ -201,23 +201,5 @@
 						}
 					]
 				}
-      },
-			    {
-        "key": "cmd+shift+w",
-				"command": "runCommands",
-				"args": {
-					"commands": [
-						{
-							"command": "workbench.action.closePanel"
-						},
-						{
-							"command": "workbench.action.closeWindow"
-						}
-					]
-				}
-			},
-			{
-				"key": "shift+cmd+w",
-				"command": "-workbench.action.closeWindow"
-			}
+      }
 ]
