@@ -31,6 +31,7 @@ if [[ $(uname) == "Linux" ]]; then
 		echo "$(brew --prefix)/bin/zsh" | sudo tee -a /etc/shells
 	fi
 	chsh -s "$(brew --prefix)/bin/zsh"
+	sudo ln -sf "$(brew --prefix)/bin/zsh" /bin/zsh
 	# wsl
 	if [ -n "$WSL_INTEROP" ]; then
 		# issue a code command to trigger installing the vscode server if not already installed
