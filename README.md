@@ -2,5 +2,5 @@
 ## Installation
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/juliusjjj/dotfiles/refs/heads/main/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/jufeic/dotfiles/refs/heads/main/install.sh)"
 ```

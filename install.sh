@@ -3,7 +3,7 @@
 cd $HOME
 if [ ! -d $HOME/dotfiles ]; then
 	echo "Cloning dotfiles"
-	git clone https://github.com/juliusjjj/dotfiles.git
+	git clone https://github.com/jufeic/dotfiles.git
 else
 	echo "Dotfiles already cloned"
 fi
