@@ -183,6 +183,9 @@
 							"command": "workbench.action.toggleMaximizedPanel"
 						},
 						{
+							"command": "workbench.action.closePanel"
+						},
+						{
 							"command": "workbench.action.focusActiveEditorGroup"
 						}
 					]
