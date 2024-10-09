@@ -119,5 +119,6 @@
 	}
 },
 "terminal.integrated.defaultProfile.osx": "zsh",
-"terminal.integrated.defaultProfile.linux": "zsh"
+"terminal.integrated.defaultProfile.linux": "zsh",
+"editor.lineNumbers": "relative"
 }
