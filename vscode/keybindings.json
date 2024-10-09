@@ -153,14 +153,24 @@
         "when": "editorTextFocus && vim.active && vim.use<C-z> && !inDebugRepl"
     },
 		{
-			"key": "shift+k",
-			"command": "editor.action.showHover",
-			"when": "editorHasHover && vim.mode != 'VisualLine' && vim.mode != 'Insert'"
+				"key": "shift+j",
+				"command": "editor.action.moveLinesDownAction",
+				"when": "editorTextFocus && !editorReadonly && (vim.mode == 'Visual' || vim.mode == 'VisualLine')"
 		},
 		{
-			"key": "shift+k",
-			"command": "editor.action.showHover",
-			"when": "editorTextFocus && vim.mode != 'VisualLine' && vim.mode != 'Insert'"
+				"key": "shift+k",
+				"command": "editor.action.moveLinesUpAction",
+				"when": "editorTextFocus && !editorReadonly && (vim.mode == 'Visual' || vim.mode == 'VisualLine')"
+		},
+		{
+				"key": "shift+k",
+				"command": "editor.action.showHover",
+				"when": "editorHasHover && vim.mode == 'Normal'"
+		},
+		{
+				"key": "shift+k",
+				"command": "editor.action.showHover",
+				"when": "editorTextFocus && vim.mode == 'Normal'"
 		},
     {
         "key": "cmd+k cmd+i",
@@ -215,5 +225,15 @@
 				"key": "ctrl+shift+`",
 				"command": "-workbench.action.terminal.new",
 				"when": "terminalProcessSupported || terminalWebExtensionContributedProfile"
+			},
+			{
+				"key": "ctrl+space z",
+				"command": "workbench.action.terminal.toggleTerminal",
+				"when": "terminal.active"
+			},
+			{
+				"key": "ctrl+`",
+				"command": "-workbench.action.terminal.toggleTerminal",
+				"when": "terminal.active"
 			}
 ]

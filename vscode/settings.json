@@ -56,16 +56,6 @@
 	}
 ],
 "vim.visualModeKeyBindingsNonRecursive": [
-    {
-        "before": ["shift+j"],
-				"commands": [ "editor.action.moveLinesDownAction" ],
-				"silent": true
-    },
-    {
-        "before": ["shift+k"],
-				"commands": [ "editor.action.moveLinesUpAction" ],
-				"silent": true
-    },
 		{
 			"before": [
 					"p"
