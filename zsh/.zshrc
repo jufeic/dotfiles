@@ -138,7 +138,7 @@ bindkey -M vicmd 'y' vi-yank-clipboard
 ff() {
   local file line="1"
   if [ "$1" != "" ]; then
-    file_tmp=$(rg --hidden -n "$1" ~/dev ~/hda ~/dotfiles | fzf) || return 1
+    file_tmp=$(rg --hidden -F -n "$1" ~/dev ~/hda ~/dotfiles | fzf) || return 1
     file=$(echo "$file_tmp" | cut -d: -f1)
     line=$(echo "$file_tmp" | cut -d: -f2)
   else
@@ -224,12 +224,12 @@ open_file() {
 	  --delimiter : \
 	  --preview 'bat --tabs 2 --color always {1} --highlight-line {2}' \
 	  --preview-window '+{2}+3/3,~3' \
-	  --bind 'start:reload(echo $RG_DIRS | xargs rg --hidden --smart-case -n '' || true)+unbind(ctrl-r)' \
-	  --bind 'change:reload:sleep 0.2;echo $RG_DIRS | xargs rg --hidden --smart-case -n {q} || true' \
+	  --bind 'start:reload(echo $RG_DIRS | xargs rg --hidden --smart-case -F -n '' || true)+unbind(ctrl-r)' \
+	  --bind 'change:reload:sleep 0.2;echo $RG_DIRS | xargs rg --hidden --smart-case -F -n {q} || true' \
 	  --bind 'ctrl-f:unbind(change,ctrl-f)+change-prompt(fzf> )+enable-search+rebind(ctrl-r)+transform-query(echo {q} > /tmp/rg-fzf-r; cat /tmp/rg-fzf-f)' \
-          --bind 'ctrl-r:unbind(ctrl-r)+change-prompt(ripgrep> )+disable-search+reload(echo $RG_DIRS | xargs rg --hidden --smart-case -n {q} || true)+rebind(change,ctrl-f)+transform-query(echo {q} > /tmp/rg-fzf-f; cat /tmp/rg-fzf-r)' \
+	  --bind 'ctrl-r:unbind(ctrl-r)+change-prompt(ripgrep> )+disable-search+reload(echo $RG_DIRS | xargs rg --hidden --smart-case -F -n {q} || true)+rebind(change,ctrl-f)+transform-query(echo {q} > /tmp/rg-fzf-f; cat /tmp/rg-fzf-r)' \
 	  --disabled \
-          --prompt 'ripgrep> '
+	  --prompt 'ripgrep> '
     ) || return 1
     file=$(echo "$file_tmp" | cut -d: -f1)
     line=$(echo "$file_tmp" | cut -d: -f2)
