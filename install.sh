@@ -42,6 +42,7 @@ if [[ $(uname) == "Linux" ]]; then
 		# make sure that the directory exists before symlinking
 		# mkdir -p $HOME/.vscode-server/data/Machine
 		# $(brew --prefix)/bin/stow -v 2 -d $HOME/dotfiles -t "$HOME/.vscode-server/data/Machine" -S vscode
+		# create windows symlinks
 		windows_username="$(cmd.exe /c "echo %USERNAME%")"
 		for file in "$HOME/dotfiles/vscode"/*; do
 			file_name="$(basename $file)"
