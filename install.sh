@@ -48,6 +48,8 @@ if [[ $(uname) == "Linux" ]]; then
 			cmd.exe /c "mklink C:\\Users\\$windows_username\\AppData\\Roaming\\Code\\User\\$file_name \\\\wsl$\\$WSL_DISTRO_NAME\\home\\$(id -un)\\dotfiles\\vscode\\$file_name"
 		done
 
+		# install extensions on the windows side since the installation in WSL using the code.sh is not supported
+		# only possible from integrated terminal in vscode or manually in the UI
 		code_wsl_path="$(which code)"
 		code_windows_path="${code_wsl_path#/mnt/}"
 		code_windows_path="${code_windows_path//\//\\}"
