@@ -235,5 +235,22 @@
 				"key": "ctrl+`",
 				"command": "-workbench.action.terminal.toggleTerminal",
 				"when": "terminal.active"
+			},
+			{
+				"key": "ctrl+space p",
+				"command": "workbench.action.quickOpen"
+			},
+			{
+				"key": "cmd+p",
+				"command": "-workbench.action.quickOpen"
+			},
+			{
+				"key": "ctrl+p",
+				"command": "-workbench.action.quickOpen"
+			},
+			{
+				"key": "ctrl+w",
+				"command": "-extension.vim_ctrl+w",
+				"when": "editorTextFocus && vim.active && vim.use<C-w> && !inDebugRepl"
 			}
 ]

@@ -110,5 +110,7 @@
 },
 "terminal.integrated.defaultProfile.osx": "zsh",
 "terminal.integrated.defaultProfile.linux": "zsh",
-"editor.lineNumbers": "relative"
+"editor.lineNumbers": "relative",
+"editor.cursorSurroundingLines": 12,
+"explorer.confirmDragAndDrop": false
 }
