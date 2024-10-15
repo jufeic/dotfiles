@@ -53,7 +53,16 @@
 	{
 		"before": ["<leader>", "j"],
 		"after": ["<leader>", "<leader>", "j"]
-	}
+	},
+	{
+		"before": ["'"],
+		"after": ["`"]
+	},
+	{
+		"before": ["<Esc>"],
+		"commands": [":nohl"],
+		"silent": true
+  }
 ],
 "vim.visualModeKeyBindingsNonRecursive": [
 		{
@@ -111,6 +120,8 @@
 "terminal.integrated.defaultProfile.osx": "zsh",
 "terminal.integrated.defaultProfile.linux": "zsh",
 "editor.lineNumbers": "relative",
-"editor.cursorSurroundingLines": 12,
-"explorer.confirmDragAndDrop": false
+"editor.cursorSurroundingLines": 8,
+"explorer.confirmDragAndDrop": false,
+"editor.cursorSmoothCaretAnimation": "on",
+"vim.hlsearch": true
 }
