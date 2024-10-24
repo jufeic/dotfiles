@@ -43,16 +43,12 @@
 		"silent": true
   },
 	{
-		"before": ["<leader>", "s"],
+		"before": ["<leader>", "j"],
 		"after": ["<leader>", "<leader>", "s"]
 	},
 	{
 		"before": ["<leader>", "w"],
 		"after": ["<leader>", "<leader>", "w"]
-	},
-	{
-		"before": ["<leader>", "j"],
-		"after": ["<leader>", "<leader>", "j"]
 	},
 	{
 		"before": ["'"],
