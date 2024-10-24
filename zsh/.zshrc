@@ -309,6 +309,9 @@ autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C $(brew --prefix)/bin/terraform terraform
 
 export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
+if command -v go &> /dev/null; then
+	export PATH=$PATH:$(go env GOPATH)/bin
+fi
 
 # zsh plugins
 # the highlighting need to be sourced at the VERY end of .zshrc
