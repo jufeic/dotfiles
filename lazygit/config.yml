@@ -1,0 +1,4 @@
+customCommands:
+  - key: 'o'
+    context: 'status'
+    command: "open $(git config --get remote.origin.url| sed -E 's#git@([^:]+):([^/]+)/([^\\.]+)\\.git#https://\\1/\\2/\\3#')"

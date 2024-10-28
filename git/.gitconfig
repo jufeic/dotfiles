@@ -1,0 +1,22 @@
+[user]
+	email = 92372920+jufeic@users.noreply.github.com
+	name = Julius Feick
+	signingkey = ~/.ssh/sign_default.pub
+[core]
+	editor = nvim
+[init]
+	defaultBranch = main
+[gpg]
+	format = ssh
+[commit]
+	gpgsign = true
+[gpg "ssh"]
+	allowedSignersFile = ~/.ssh/allowed-signers
+[log]
+	showSignature = true
+[fetch]
+	prune = true
+[merge]
+	conflictstyle = diff3
+[diff]
+	algorithm = patience
