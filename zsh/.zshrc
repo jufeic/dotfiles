@@ -8,7 +8,8 @@ else
   # linux
   if [ -n "$WSL_INTEROP" ]; then
     # wsl
-    export CLIPBOARD="/mnt/c/Windows/System32/clip.exe"
+    export CLIPBOARD="clip.exe"
+		alias open="powershell.exe start explorer.exe"
   else
     # no wsl
     export CLIPBOARD="xclip -selection clipboard"
@@ -19,6 +20,7 @@ fi
 # so that we can call functions with $() in the prompt in themes
 setopt PROMPT_SUBST
 set -o pipefail
+export FZF_DEFAULT_OPTS="--exact"
 if [[ $TERM_PROGRAM == "tmux" ]]; then
   export FZF_CTRL_R_OPTS="--tmux"
 fi
@@ -39,6 +41,8 @@ setopt HIST_EXPIRE_DUPS_FIRST
 setopt INC_APPEND_HISTORY
 # to avoid the % char e.g. if tmux sends keys before completely loaded
 unsetopt PROMPT_SP
+# to avoid the beep sound in the terminal
+unsetopt BEEP
 
 autoload -U colors && colors
 
@@ -51,6 +55,7 @@ source $ZSH/themes/jjcol.zsh-theme
 export EDITOR='vi'
 
 # aliases
+alias k=kubectl
 alias docker=podman
 alias lg=lazygit
 alias vi=nvim
@@ -296,6 +301,10 @@ _comp_options+=(globdots)
 
 # Set up fzf key bindings and fuzzy completion
 source <(fzf --zsh)
+
+if command -v kind &> /dev/null; then
+	source <(kind completion zsh)
+fi
 
 # either this to generate the completion functions in a file belonging to fpath
 # podman completion zsh -f "$ZSH/completion/_podman"
