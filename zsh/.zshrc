@@ -17,6 +17,8 @@ else
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+# avoid duplicates on path
+typeset -U path
 # so that we can call functions with $() in the prompt in themes
 setopt PROMPT_SUBST
 set -o pipefail
@@ -60,7 +62,8 @@ alias docker=podman
 alias lg=lazygit
 alias vi=nvim
 alias vim=nvim
-alias ll='ls -lah --color'
+alias ll='ls -lahF --color'
+alias rm='rm -I'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
@@ -135,6 +138,14 @@ vi-yank-clipboard() {
 
 zle -N vi-yank-clipboard
 bindkey -M vicmd 'y' vi-yank-clipboard
+
+# this function is to open playground main file in go to try out things very quick
+test-go() {
+	mkdir -p $HOME/dev/go/test
+	truncate -s 0 $HOME/dev/go/test/main.go
+	echo -e 'package main\n\nfunc main() {\n\n}' > $HOME/dev/go/test/main.go
+	code $HOME/dev/go/test -g "$HOME/dev/go/test/main.go:4"
+}
 
 # this function is to fuzzy-find files and patterns in files from cli
 # ff
@@ -317,9 +328,10 @@ fi
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C $(brew --prefix)/bin/terraform terraform
 
-export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
+path=($path /opt/homebrew/opt/node@20/bin)
+path=(/usr/local/go/bin $path)
 if command -v go &> /dev/null; then
-	export PATH=$PATH:$(go env GOPATH)/bin
+	path=("$(go env GOPATH)/bin" $path)
 fi
 
 # zsh plugins
