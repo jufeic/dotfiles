@@ -118,6 +118,18 @@
 "editor.lineNumbers": "relative",
 "editor.cursorSurroundingLines": 8,
 "explorer.confirmDragAndDrop": false,
-"editor.cursorSmoothCaretAnimation": "on",
-"vim.hlsearch": true
+"vim.hlsearch": true,
+"editor.stickyScroll.enabled": false,
+"gopls": {
+  "ui.diagnostic.analyses": {
+    "fieldalignment": true
+  },
+	"staticcheck": true,
+	"ui.codelenses": {
+    "run_govulncheck": true
+  },
+	"formatting.gofumpt": true
+},
+"go.diagnostic.vulncheck": "Imports",
+"editor.accessibilitySupport": "off"
 }
