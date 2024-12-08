@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+line="1"
+if [ "$1" != "" ]; then
+	rm -f /tmp/rg-fzf-{r,f}
+	file_tmp=$(
+		fzf \
+			--keep-right \
+			--ansi \
+			--layout reverse \
+			--delimiter : \
+			--preview 'bat --tabs 2 --color always {1} --highlight-line {2}' \
+			--preview-window '+{2}+3/3,~3' \
+			--bind 'start:reload(echo $RG_DIRS | xargs rg --hidden --smart-case -F -n '' || true)+unbind(ctrl-r)' \
+			--bind 'change:reload:sleep 0.2;echo $RG_DIRS | xargs rg --hidden --smart-case -F -n {q} || true' \
+			--bind 'ctrl-f:unbind(change,ctrl-f)+change-prompt(fzf> )+enable-search+rebind(ctrl-r)+transform-query(echo {q} > /tmp/rg-fzf-r; cat /tmp/rg-fzf-f)' \
+			--bind 'ctrl-r:unbind(ctrl-r)+change-prompt(ripgrep> )+disable-search+reload(echo $RG_DIRS | xargs rg --hidden --smart-case -F -n {q} || true)+rebind(change,ctrl-f)+transform-query(echo {q} > /tmp/rg-fzf-f; cat /tmp/rg-fzf-r)' \
+			--disabled \
+			--prompt 'ripgrep> '
+	) || exit 1
+	file=$(echo "$file_tmp" | cut -d: -f1)
+	line=$(echo "$file_tmp" | cut -d: -f2)
+else
+	file=$(
+		fzf \
+			--ansi \
+			--layout reverse \
+			--preview 'bat --tabs 2 --color always {}' \
+			--bind 'start:reload(echo $RG_DIRS | xargs rg --files --hidden -g "!*.pdf" --smart-case || true)'
+	) || exit 1
+fi
+
+dir=$(dirname "$file")
+git_root=$(git -C "$dir" rev-parse --show-toplevel 2> /dev/null)
+is_git_repo=$?
+
+if [ $is_git_repo -eq 0 ]; then
+	dir="$git_root"
+fi
+
+session_name="~${dir#"$HOME"}"
+code $dir -g "${file}:${line}"
+
+if ! tmux has-session -t "$session_name" 2> /dev/null; then
+	create-project-windows $session_name $dir $file $line
+
+	if [ $is_git_repo -eq 0 ]; then
+		create-git-window $session_name $dir
+	fi
+else
+	# select the nvim pane before checking the window names e.g. if focus is one other pane
+	tmux select-pane -t "${session_name}:2.1"
+	window_name=$(tmux list-windows -t "$session_name" -F "#{window_index}:#{window_name}" | grep "^2:");
+	if [[ $window_name == "2:nvim" ]]; then
+		tmux send-keys -t "${session_name}:2.1" ":n +${line} $file" C-m
+	else
+		tmux send-keys -t "${session_name}:2.1" "nvim +${line} $file" C-m
+	fi
+fi
+
+tmux switch-client -t "${session_name}:2"

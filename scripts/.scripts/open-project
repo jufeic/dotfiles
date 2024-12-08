@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+project=$(fd --glob ".git" ~/dotfiles ~/dev ~/hda --type d --hidden | xargs -I {} dirname {} | fzf) || exit 1
+session_name="~${project#"$HOME"}"
+code $project
+
+if ! tmux has-session -t "$session_name" 2> /dev/null; then
+	create-project-windows $session_name $project ""
+	create-git-window $session_name $project
+else
+	# select the nvim pane before checking the window names e.g. if focus is one other pane
+	tmux select-pane -t "${session_name}:2.1"
+	window_name=$(tmux list-windows -t "$session_name" -F "#{window_index}:#{window_name}" | grep "^2:");
+	if [[ $window_name != "2:nvim" ]]; then
+		tmux send-keys -t "${session_name}:2.1" "nvim" C-m
+	fi
+fi
+
+tmux switch-client -t "${session_name}:2"
