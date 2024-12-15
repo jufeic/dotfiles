@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+dir="$HOME/dev/c/test"
+
+mkdir -p "$dir"
+rm -rf "$dir"/*
+cd $dir
+cp -r $HOME/.templates/c/* $dir
+code $dir -g "$dir/main.c:3"

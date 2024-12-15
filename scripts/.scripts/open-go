@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+dir="$HOME/dev/go/test"
+
+mkdir -p "$dir"
+rm -rf "$dir"/*
+cd $dir
+go mod init example.com
+cp -r $HOME/.templates/go/* $dir
+code $dir -g "$dir/cmd/main.go:4"
