@@ -134,6 +134,37 @@ cursor_mode
 vi-yank-clipboard() {
   zle vi-yank
   echo -n "$CUTBUFFER" | $CLIPBOARD
+	# Save the current buffer (command) and the current prefix
+	local prefix="❯ "
+  local command="$BUFFER"
+
+  # Clear the current line
+  echo -ne "\033[2K\r"
+
+  # Reprint the prefix without highlighting
+  echo -ne "$prefix"
+
+  # Highlight the command text
+  echo -ne "\033[43m$command\033[0m"
+
+  current_window_name=$(tmux display-message -p '#W')
+	tmux setw automatic-rename off
+	# we must use the disabling of automatic renaming of the title
+	# in the tmux status line before renaming the window since otherwise
+	# this command itself (tmux rename-window) would already trigger a
+	# renaming (if we would have tried to just rename the window directly
+	# after sleep)
+	tmux rename-window "$current_window_name"
+  # Wait for 200ms
+  sleep 0.1
+
+  # Redraw the original line (prefix and command without highlight)
+  echo -ne "\033[2K\r$prefix$command"
+
+  # Restore the zle prompt
+  zle reset-prompt
+
+	tmux setw automatic-rename on
 }
 
 zle -N vi-yank-clipboard
