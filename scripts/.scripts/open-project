@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-project=$(fd --glob ".git" ~/dotfiles ~/dev ~/hda --type d --hidden 2>/dev/null | xargs -I {} dirname {} | fzf) || exit 1
+project=$(fd --glob ".git" ~/dotfiles ~/dev ~/hda --type d --hidden --no-ignore 2>/dev/null | xargs -I {} dirname {} | fzf) || exit 1
 session_name="~${project#"$HOME"}"
 code $project
 
