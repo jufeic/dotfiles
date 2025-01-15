@@ -22,3 +22,5 @@
 	algorithm = patience
 [rebase]
 	autoSquash = true
+[alias]
+	cleanlog = -c log.showSignature=false log --graph --abbrev-commit --decorate --format=format:'%h' --all
