@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+tmux list-sessions -F '#{session_name}' | \
+fzf \
+	--tmux 80% \
+	--ansi \
+	--keep-right \
+	--reverse \
+	--preview-window=70% \
+	--preview "tmux capture-pane -pe -S 0 -E "$(tmux display-message -p '#{pane_height}')" -t \"\$(tmux list-panes -t {} -F '#{pane_id}' -f '#{?pane_active,1,0}')\" | cut -c -\$(tput cols)" \
+	|| true
