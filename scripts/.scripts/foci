@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# (F)uzzy find (oci) images
+# TODO: flag to allow unofficial
+
+fzf \
+	--reverse \
+	--ansi \
+	--preview-window='65%' \
+	--bind 'change:reload:sleep 0.2; podman search --format "{{.Name}}" --filter=is-official --limit 200 {q} || true' \
+	--bind "focus:execute-silent(skopeo inspect --raw docker://{}:latest | \
+		jq -r --arg ARCH \"\$(uname -m)\" '.manifests[] | select(.platform.architecture == \$ARCH and .platform.os == \"linux\") | .digest' | \
+		tr -d \"\n\" | pbcopy)+preview(skopeo inspect --no-tags --override-os linux docker://{}:latest)" \
+	--bind 'zero:preview:echo' \
+	</dev/null \
+	>/dev/null \
+|| true
+
+	# --bind "focus:execute:skopeo inspect --raw docker://{}:latest | jq -r --arg ARCH \"\$(uname -m)\" '.manifests[] | select(.platform.architecture == \$ARCH and .platform.os == \"linux\") | .digest' | tr -d \"\n\" | pbcopy" \
+	# --bind 'focus:preview:skopeo inspect --no-tags --override-os linux docker://{}:latest | tee >(jq -r ".Digest" | tr -d "\n" | pbcopy)' \
