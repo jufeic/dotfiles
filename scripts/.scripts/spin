@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# print a spinner for the duration of some process or forever
+# spin (default PID 0 is used which is always running)
+# spin $! (spin for the duration of the last process started in background)
+
+PID=${1:-0}
+
+while kill -0 "$PID" 2>/dev/null; do
+	for s in '|' '/' '-' '\'; do
+		printf "\r%s" "$s"
+		sleep 0.15
+	done
+done
