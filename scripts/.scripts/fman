@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# (f)uzzy (man)page options
+
+# col -bx: removes weird backspace formatting in man page
+# disable MANPAGER if one is set because fzf does not allow
+# any pager (interactive app) in the preview window
+unset MANPAGER
+CMD="$1"
+# MANWIDTH need to be set prior since if those widths of the two
+# man commands do not match, the line numbers will differ
+MANWIDTH=$(( $(tput cols) * 60 / 100 ))
+man "$CMD" | \
+rg \
+	-n '^\s*[-\u2022]' | \
+fzf \
+	--reverse \
+	--ansi \
+	--with-nth=2 \
+	--delimiter=':' \
+	--preview "man $CMD | col -bx | bat --language man --style=plain --color=always" \
+	--preview-window='+{1},~3,60%' \
+|| true
+
+## Old pattern able to recognize standard manpages but not those containing dots
+## before options like in jq manpage: those special dots are encoded as \u2022
+## '^\s+-'
