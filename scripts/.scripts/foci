@@ -1,20 +1,67 @@
 #!/usr/bin/env bash
 
 # (F)uzzy find (oci) images
-# TODO: flag to allow unofficial
+
+TOGGLE_FILE=$(mktemp)
+
+echo "on" > "$TOGGLE_FILE"
 
 fzf \
 	--reverse \
+	--keep-right \
 	--ansi \
-	--preview-window='65%' \
-	--bind 'change:reload:sleep 0.2; podman search --format "{{.Name}}" --filter=is-official --limit 200 {q} || true' \
-	--bind "focus:execute-silent(skopeo inspect --raw docker://{}:latest | \
-		jq -r --arg ARCH \"\$(uname -m)\" '.manifests[] | select(.platform.architecture == \$ARCH and .platform.os == \"linux\") | .digest' | \
-		tr -d \"\n\" | pbcopy)+preview(skopeo inspect --no-tags --override-os linux docker://{}:latest)" \
+	--tmux 80% \
+	--color='bg:#292C34' \
+	--preview-window='70%' \
+	--bind "change:reload:sleep 0.2;
+		if [[ \$(cat $TOGGLE_FILE) == 'on' ]]; then
+			podman search --format "{{.Name}}" --filter=is-official --limit 200 {q} || true
+		else
+			podman search --format "{{.Name}}" --limit 200 {q} || true
+		fi" \
+	--bind "ctrl-o:execute-silent(
+		if [[ \$(cat $TOGGLE_FILE) == 'on' ]]; then
+			echo off > $TOGGLE_FILE
+		else
+			echo on > $TOGGLE_FILE
+		fi
+		)+reload(
+		if [[ \$(cat $TOGGLE_FILE) == 'on' ]]; then
+			podman search --format '{{.Name}}' --filter=is-official --limit 200 {q} || true
+		else
+			podman search --format '{{.Name}}' --limit 200 {q} || true
+		fi
+		)" \
+	--bind "?:preview(skopeo inspect --no-tags --override-os linux --raw --config docker://{}:latest | jq -C)" \
+	--bind "enter:execute(echo -n \"{r}@sha256:\$(skopeo inspect --raw docker://{}:latest | sha256sum | \
+		cut -d' ' -f1)\" | pbcopy)+accept" \
 	--bind 'zero:preview:echo' \
 	</dev/null \
 	>/dev/null \
 || true
 
-	# --bind "focus:execute:skopeo inspect --raw docker://{}:latest | jq -r --arg ARCH \"\$(uname -m)\" '.manifests[] | select(.platform.architecture == \$ARCH and .platform.os == \"linux\") | .digest' | tr -d \"\n\" | pbcopy" \
-	# --bind 'focus:preview:skopeo inspect --no-tags --override-os linux docker://{}:latest | tee >(jq -r ".Digest" | tr -d "\n" | pbcopy)' \
+rm -f "$TOGGLE_FILE"
+
+## The idea was to fetch the remote data silently and print some loading in the preview window but
+## unfortunately (bug) the preview window is updated after the execute-silent finished.
+## since fzf is exited with accept directly after, its okayish to use standard execute here
+	# --bind "enter:preview(echo 'Getting SHA...')+execute-silent(echo -n \"{r}@sha256:\$(skopeo inspect --raw docker://{}:latest | sha256sum | cut -d' ' -f1 \
+	# 	)\" | pbcopy)+accept" \
+
+## This copies the sha directly to clipboard if details are shown
+## leading to a longer time to display the preview and potentially garbages the clipboard
+## even though the 'enter' time is faster
+## Copying into clipboard would also always require to show the preview
+	# --bind "?:execute-silent(echo -n \"{r}@sha256:\$(skopeo inspect --raw docker://{}:latest | sha256sum | cut -d' ' -f1 | \
+	# 	tr -d \"\n\")\" | pbcopy)+preview(skopeo inspect --no-tags --override-os linux --raw --config docker://{}:latest | jq -C)" \
+
+## This uses the format option to extract the index digest directly but this is slower than calculating it manually
+# --bind "?:execute-silent(skopeo inspect --override-os linux --format "{{.Digest}}" docker://{}:latest | \
+# 	tr -d \"\n\" | pbcopy)+preview(skopeo inspect --no-tags --override-os linux --raw --config docker://{}:latest | jq -C)" \
+
+## this binding allows to get already the right manifest digest for the platform.
+## this is not really needed since the container manager automatically decides to pull
+## the right image for the platform if only the index digest is provided
+# --bind "?:execute-silent(skopeo inspect --raw docker://{}:latest | \
+# 	jq -r --arg ARCH \"\$(uname -m)\" '.manifests[] | select(.platform.architecture == \$ARCH and .platform.os == \"linux\") | .digest' | \
+# 	tr -d \"\n\" | pbcopy)+preview(skopeo inspect --no-tags --override-os linux --raw --config docker://{}:latest | jq -C)" \
