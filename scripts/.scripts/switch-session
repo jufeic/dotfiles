@@ -3,8 +3,7 @@
 session_name=$(
 	tmux list-sessions -F '#{session_name}' | \
 	fzf \
-		--tmux 80% \
-		--prompt 'select session: ' \
+		--tmux 85% \
 		--ansi \
 		--keep-right \
 		--reverse \

@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+pane_name=$(
+	tmux list-panes -a -F '#{pane_id} #{session_name}:#{window_index}:#{pane_current_command}' | \
+	fzf \
+		--tmux 85% \
+		--ansi \
+		--keep-right \
+		--reverse \
+		--preview-window=70% \
+		--color='bg:#292C34' \
+		--with-nth=2 \
+		--accept-nth=1 \
+		--preview " \
+			tmux capture-pane -pe -S 0 \
+			-E "$(tmux display-message -p '#{pane_height}')" \
+			-t {1} \
+			| cut -c -\$(tput cols)
+		" \
+		--bind="ctrl-x:execute-silent(tmux kill-pane -t {1})+clear-query+reload(tmux \
+			list-panes -a -F '#{pane_id} #{session_name}:#{window_index}:#{pane_current_command}')"
+) || exit 0
+
+tmux switch-client -t "$pane_name"
