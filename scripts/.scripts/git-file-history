@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# show the file content history of a certain file
+FILE=$1
+# use of single quotes around the filename for git show command to expand the variable before the
+# preview window of fzf runs a new $SHELL -c command which would not be aware of the filename variable
+# use of file name for bat to avoid an error when manually but explicitly setting the language with --language 
+# and its not supported. Using file name, it uses it to derive the language and defaults to just print plain text
+# without syntax highlighting if the language is not recognized or supported
+HASH=$(
+	git log \
+		--no-show-signature \
+		--pretty=oneline \
+		--follow \
+		-- "$FILE" | \
+	fzf \
+	--reverse \
+	--tmux=100% \
+	--accept-nth=1 \
+	--preview 'git show {1}:'$FILE' | bat --style full --color always --file-name='$FILE''
+) || exit 0
+
+echo -n "$HASH" | $CLIPBOARD
+
+# old version
+# since bat reads from stdin, it is not aware of any filename and therefore it has no knowledge of the
+# file extension to automatically assume a language -> manually pass the language
+# git log --no-show-signature --pretty=oneline --follow -- "$FILE" | \
+# fzf --delimiter ' ' --reverse --tmux 100% --preview 'git show {1}:'$FILE' | \
+# bat --style full --color always --language=$(basename '$FILE' | awk -F. "{print \$NF}")' || return 1
