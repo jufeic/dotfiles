@@ -5,6 +5,6 @@
 
 session_name=$1
 dir=$2
-tmux new-window -t "${session_name}:3"
-tmux send-keys -t "${session_name}:3" "cd ${dir}" C-m C-l
-tmux send-keys -t "${session_name}:3" "lazygit" C-m
+tmux new-window -t "${session_name}:3" -c "$dir"
+# Send the C-l first to get rid of the double command displayed
+tmux send-keys -t "${session_name}:3" C-l "lazygit" C-m

@@ -1,6 +1,24 @@
 #!/usr/bin/env bash
 
-project=$(fd --glob ".git" ~/dotfiles ~/dev ~/hda --type d --hidden --no-ignore 2>/dev/null | xargs -I {} dirname {} | fzf) || exit 1
+project=$(
+	fd \
+		--glob ".git" ~/dotfiles ~/dev ~/hda \
+		--type d \
+		--hidden \
+		--no-ignore \
+		2>/dev/null | \
+	xargs dirname | \
+	fzf \
+		--tmux 80% \
+		--ansi \
+		--keep-right \
+		--reverse \
+		--preview-window=55% \
+		--color='bg:#292C34' \
+		--style=full \
+		--list-label='projects' \
+		--preview 'ls -lAhF --color {}' \
+) || exit 0
 session_name="~${project#"$HOME"}"
 code $project
 
