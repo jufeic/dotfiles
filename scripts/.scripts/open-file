@@ -5,29 +5,37 @@ if [ "$1" != "" ]; then
 	rm -f /tmp/rg-fzf-{r,f}
 	file_tmp=$(
 		fzf \
+			--tmux='90%' \
 			--keep-right \
 			--ansi \
-			--layout reverse \
-			--delimiter : \
+			--reverse \
+			--color='bg:#292C34' \
+			--style=full \
+			--list-label='patterns' \
+			--delimiter=':' \
 			--preview 'bat --tabs 2 --color always {1} --highlight-line {2}' \
 			--preview-window '+{2}+3/3,~3' \
-			--bind 'start:reload(echo $RG_DIRS | xargs rg --hidden --smart-case -F -n '' || true)+unbind(ctrl-r)' \
-			--bind 'change:reload:sleep 0.2;echo $RG_DIRS | xargs rg --hidden --smart-case -F -n {q} || true' \
+			--bind "start:reload(rg --hidden --smart-case -F -n $RG_DIRS || true)+unbind(ctrl-r)" \
+			--bind "change:reload:sleep 0.2;rg --hidden --smart-case -F -n $RG_DIRS -e {q} || true" \
 			--bind 'ctrl-f:unbind(change,ctrl-f)+change-prompt(fzf> )+enable-search+rebind(ctrl-r)+transform-query(echo {q} > /tmp/rg-fzf-r; cat /tmp/rg-fzf-f)' \
-			--bind 'ctrl-r:unbind(ctrl-r)+change-prompt(ripgrep> )+disable-search+reload(echo $RG_DIRS | xargs rg --hidden --smart-case -F -n {q} || true)+rebind(change,ctrl-f)+transform-query(echo {q} > /tmp/rg-fzf-f; cat /tmp/rg-fzf-r)' \
+			--bind "ctrl-r:unbind(ctrl-r)+change-prompt(ripgrep> )+disable-search+reload(rg --hidden --smart-case -F -n $RG_DIRS -e {q} || true)+rebind(change,ctrl-f)+transform-query(echo {q} > /tmp/rg-fzf-f; cat /tmp/rg-fzf-r)" \
 			--disabled \
 			--prompt 'ripgrep> '
-	) || exit 1
+	) || exit 0
 	file=$(echo "$file_tmp" | cut -d: -f1)
 	line=$(echo "$file_tmp" | cut -d: -f2)
 else
 	file=$(
 		fzf \
+			--tmux='90%' \
 			--ansi \
-			--layout reverse \
+			--reverse \
+			--color='bg:#292C34' \
+			--style=full \
+			--list-label='files' \
 			--preview 'bat --tabs 2 --color always {}' \
-			--bind 'start:reload(echo $RG_DIRS | xargs rg --files --hidden -g "!*.pdf" --smart-case || true)'
-	) || exit 1
+			--bind "start:reload(rg --files --hidden -g '!*.pdf' --smart-case $RG_DIRS || true)"
+	) || exit 0
 fi
 
 dir=$(dirname "$file")
