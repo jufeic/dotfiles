@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 # (F)uzzy find (oci) images
+if ! podman ps &>/dev/null; then
+	echo "Podman not running"
+	exit 1
+fi
 
 TOGGLE_FILE=$(mktemp)
 
