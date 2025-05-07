@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+split_type=${1:-h}
+
+pane_tty=$(tmux display-message -p "#{pane_tty}")
+pane_command=$(tmux display-message -p "#{pane_current_command}")
+pane_path=$(tmux display-message -p "#{pane_current_path}")
+
+if [[ "$pane_command" == "ssh" ]]; then
+	# Extract the full ssh command from the current pane's terminal
+	# if stat field contains a '+', the process in the foreground process group
+	ssh_command=$(ps -o stat,command -t "$pane_tty" | awk '$1 ~ /\+/ {print substr($0, index($0,$2))}') || exit 1
+	tmux split-window -"${split_type}" -c "$pane_path" "$ssh_command"
+else
+	tmux split-window -"${split_type}" -c "$pane_path"
+fi
