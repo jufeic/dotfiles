@@ -5,12 +5,25 @@ split_type=${1:-h}
 pane_tty=$(tmux display-message -p "#{pane_tty}")
 pane_command=$(tmux display-message -p "#{pane_current_command}")
 pane_path=$(tmux display-message -p "#{pane_current_path}")
+# we need to check this first as we cannot rely on checking the pane current command for
+# podman as it could be wrapped in a Makefile e.g. and then make is the pane current command
+container_command=$(ps -ww -o command -t "$pane_tty" | awk '$1=="podman" && ( $2=="run" || $2=="exec" )') || exit 0
 
 if [[ "$pane_command" == "ssh" ]]; then
 	# Extract the full ssh command from the current pane's terminal
 	# if stat field contains a '+', the process in the foreground process group
-	ssh_command=$(ps -o stat,command -t "$pane_tty" | awk '$1 ~ /\+/ {print substr($0, index($0,$2))}') || exit 1
+	ssh_command=$(ps -ww -o stat,command -t "$pane_tty" | awk '$1 ~ /\+/ {print substr($0, index($0,$2))}') || exit 0
 	tmux split-window -"${split_type}" -c "$pane_path" "$ssh_command"
+elif [ -n "$container_command" ]; then
+	if [ "$(echo "$container_command" | awk '{print $2}')" = "exec" ]; then
+		# if its exec, use exactly this command
+		tmux split-window -"${split_type}" -c "$pane_path" "$container_command"
+	else
+		# if its run, use the cid file for this tty because then I refer to
+		# a container started exactly in this dir and tty
+		tmux split-window -"${split_type}" -c "$pane_path" \
+			"podman exec -it $(cat ${pane_path}/.cid-$(basename ${pane_tty})) bash"
+	fi
 else
 	tmux split-window -"${split_type}" -c "$pane_path"
 fi
