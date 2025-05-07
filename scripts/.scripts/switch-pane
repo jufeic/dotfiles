@@ -9,6 +9,8 @@ pane_name=$(
 		--reverse \
 		--preview-window=70% \
 		--color='bg:#292C34' \
+		--style=full \
+		--list-label='panes' \
 		--with-nth=2 \
 		--accept-nth=1 \
 		--preview " \

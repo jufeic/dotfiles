@@ -9,6 +9,8 @@ session_name=$(
 		--reverse \
 		--preview-window=70% \
 		--color='bg:#292C34' \
+		--style=full \
+		--list-label='sessions' \
 		--preview " \
 			tmux capture-pane -pe -S 0 \
 			-E "$(tmux display-message -p '#{pane_height}')" \
