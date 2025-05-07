@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+current_layout="$(tmux display-message -p "#{window_layout}")"
+
+tmux list-keys \
+	| awk '/select-layout/ { print $NF }' \
+	| fzf \
+		--tmux=30% \
+		--ansi \
+		--keep-right \
+		--reverse \
+		--color='bg:#292C34' \
+		--style=full \
+		--list-label='layouts' \
+		--bind "change:execute-silent(
+			if [[ {q} == '' ]]; then
+				tmux select-layout \"$current_layout\"
+			else
+				tmux select-layout {}
+			fi
+		)" >/dev/null
+
+if [ $? -ne 0 ]; then
+	tmux select-layout "$current_layout"
+fi
+
+
