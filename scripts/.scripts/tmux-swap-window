@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+direction="$1"
+current_window_id="$(tmux display-message -p '#I')"
+
+if [ "$direction" = "left" ]; then
+	if [ "$current_window_id" -gt 1 ]; then
+		tmux swap-window -d -t -1
+	fi
+elif [ "$direction" = "right" ]; then
+	total_windows="$(tmux list-windows | wc -l)"
+	if [ "$current_window_id" -lt "$total_windows" ]; then
+		tmux swap-window -d -t +1
+	fi
+fi
+
