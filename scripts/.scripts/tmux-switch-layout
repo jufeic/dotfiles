@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# The filename may not contain "select-layout", otherwise the awk command will
+# consider the new binding to call the script in tmux
+
+current_layout="$(tmux display-message -p "#{window_layout}")"
+
+{
+	echo 'current'
+	tmux list-keys | awk '/select-layout/ && $0 !~ /-E/ { print $NF }'
+} | fzf \
+		--tmux=30% \
+		--ansi \
+		--keep-right \
+		--reverse \
+		--color='bg:#292C34' \
+		--style=full \
+		--list-label='layouts' \
+		--bind "focus:execute-silent(
+			if [[ {} == 'current' ]]; then
+				tmux select-layout \"$current_layout\"
+			else
+				tmux select-layout {}
+			fi
+		)" \
+		--bind "change:execute-silent(
+			if [[ {q} == '' || {q} == 'current' ]]; then
+				tmux select-layout \"$current_layout\"
+			else
+				tmux select-layout {}
+			fi
+		)" >/dev/null
+
+if [ $? -ne 0 ]; then
+	tmux select-layout "$current_layout"
+fi
+
+
