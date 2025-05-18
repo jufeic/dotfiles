@@ -1,9 +1,15 @@
 [user]
 	email = 92372920+jufeic@users.noreply.github.com
 	name = Julius Feick
-	signingkey = ~/.ssh/sign_default.pub
+[include]
+	path = ~/.gitconfig.local
+[includeIf "gitdir:~/hda"]
+	path = ~/.gitconfig.stud
+[includeIf "gitdir:~/work"]
+	path = ~/.gitconfig.work
 [core]
 	editor = nvim
+	excludesFile = ~/.gitignore
 [init]
 	defaultBranch = main
 [gpg]
@@ -12,6 +18,7 @@
 	gpgsign = true
 [gpg "ssh"]
 	allowedSignersFile = ~/.ssh/allowed-signers
+	program = git-sign
 [log]
 	showSignature = true
 [fetch]

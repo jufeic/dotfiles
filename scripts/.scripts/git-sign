@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+y_flag=""
+key=""
+
+while getopts Y:f:n:s:I:O: opt; do
+	case $opt in
+		Y) y_flag="$OPTARG" ;;
+		f) key="$OPTARG" ;;
+	esac;
+done
+
+if [[ $y_flag == "sign" ]]; then
+	ssh-add -T "$key" 2>/dev/null || ssh-add -q --apple-use-keychain "$key"
+fi
+
+exec ssh-keygen "$@"
+

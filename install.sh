@@ -21,6 +21,13 @@ else
 	eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+if [ ! -f "$HOME/dotfiles/git/.gitconfig.local" ]; then
+	cat <<- 'EOF' > "$HOME/dotfiles/git/.gitconfig.local"
+	# This file is intended for git configurations that are sensitive
+	# and should therefore not be part of the published ~/.gitconfig
+	EOF
+fi
+
 brew install tmux fzf ripgrep fd lazygit bat stow neovim zsh-syntax-highlighting terraform
 
 if [[ $(uname) == "Linux" ]]; then
@@ -59,13 +66,16 @@ if [[ $(uname) == "Linux" ]]; then
 	fi
 fi
 
-$(brew --prefix)/bin/stow -v 2 -d $HOME/dotfiles -t $HOME -S zsh tmux ripgrep
+$(brew --prefix)/bin/stow -v 2 -d $HOME/dotfiles -t $HOME -S zsh tmux ripgrep git
 # distinguish between OS and separately apply the stow vscode config
 # set a different target directory for vscode config so dont try to set the whole
 # path just generalize it under a vscode folder and the target is then dependent on OS
 if [[ $(uname) == "Darwin" ]]; then
+	# rm -rf "$HOME/Library/Application Support/lazygit/config.yml"
+	$(brew --prefix)/bin/stow -v 2 -d $HOME/dotfiles -t "$HOME/Library/Application Support/lazygit" -S lazygit
 	$(brew --prefix)/bin/stow -v 2 -d $HOME/dotfiles -t "$HOME/Library/Application Support/Code/User" -S vscode
 	xargs -n 1 code --install-extension < $HOME/dotfiles/vscode/vscode-extensions.txt
 fi
 
+mkdir -p $HOME/dev
 touch $HOME/.zsh_history
