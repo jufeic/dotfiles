@@ -3,9 +3,9 @@
 	name = Julius Feick
 [include]
 	path = ~/.gitconfig.local
-[includeIf "gitdir:~/hda"]
+[includeIf "gitdir:~/hda/"]
 	path = ~/.gitconfig.stud
-[includeIf "gitdir:~/work"]
+[includeIf "gitdir:~/work/"]
 	path = ~/.gitconfig.work
 [core]
 	editor = nvim
